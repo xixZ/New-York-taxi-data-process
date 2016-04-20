@@ -20,7 +20,7 @@ return {"vendor_id": $t.vendor_id,
 	"total_amount": $t.total_amount,	
 	"neighbor_id": (for $r in dataset neighborhood
 		where spatial-intersect($t.dropoff_location, $r.spatial_cell)
-		return $r)[0]
+		return $r.major_id)[0]
 }
 )
 

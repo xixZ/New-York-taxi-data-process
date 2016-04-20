@@ -5,7 +5,7 @@ using localfs
 
 
 use dataverse tripdata;
-load dataset nyBorough
+load dataset neighborhood
 using localfs
 (("path"="localhost:///home/sony/Data/border.adm"),("format"="adm")) pre-sorted;
 
