@@ -1,0 +1,38 @@
+use dataverse tripdata
+insert into dataset tripdata(
+for $t in dataset TripData
+return {"vendor_id": $t.vendor_id,
+	"pickup_datetime": $t.pickup_datetime,
+	"dropoff_datetime": $t.dropoff_datetime,
+	"passenger_count": $t.passenger_count,
+	"trip_distance": $t.trip_distance,
+	"pickup_location": $t.pickup_location,
+	"ratecode_id": $t.ratecode_id,
+	"store_and_fwd_flag": $t.store_and_fwd_flag,
+	"dropoff_location": $t.dropoff_location,
+	"payment_type": $t.payment_type,
+	"fare_amount": $t.fare_amount,
+	"extra": $t.extra,
+	"mta_tax": $t.mta_tax, 
+	"tip_amount": $t.tip_amount,
+	"tolls_amount": $t.tolls_amount,
+	"improvement_surcharge": $t.improvement_surcharge,
+	"total_amount": $t.total_amount,	
+	"neighbor_id": (for $r in dataset neighborhood
+		where spatial-intersect($t.dropoff_location, $r.spatial_cell)
+		return $r)[0]
+}
+)
+
+
+use dataverse tripdata
+
+insert into dataset cell(
+for $r in dataset tripdata
+group by $nid := $r.neighbor_id,
+	$timebin := interval-bin($r.dropoff_datetime, datetime("2015-01-01T00:00:00.000"), day-time-duration("PT6H")) with $r
+let $s := sum(for $i in $r return $i.passenger_count)
+return {"spatial_id": $nid, "start_time": get-interval-start-datetime($timebin), "count": $s}
+)
+
+

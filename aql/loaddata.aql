@@ -1,0 +1,11 @@
+use dataverse tripdata;
+load dataset TripData
+using localfs
+(("path"="localhost:///media/sony/16B87538B8751787/taxi.adm"),("format"="adm")) pre-sorted;
+
+
+use dataverse tripdata;
+load dataset nyBorough
+using localfs
+(("path"="localhost:///home/sony/Data/border.adm"),("format"="adm")) pre-sorted;
+
